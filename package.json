@@ -13,7 +13,8 @@
   "devDependencies": {
     "serverless": "^1.42.3",
     "serverless-cloudside-plugin": "^1.0.3",
-    "serverless-iam-roles-per-function": "^2.0.1"
+    "serverless-iam-roles-per-function": "^2.0.1",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
