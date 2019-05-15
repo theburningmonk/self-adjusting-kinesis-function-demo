@@ -1,0 +1,20 @@
+{
+    "Records": [
+        {
+            "kinesis": {
+                "kinesisSchemaVersion": "1.0",
+                "partitionKey": "test",
+                "sequenceNumber": "49595726434686551835933881938286007156865948423133593602",
+                "data": "eyJpZCI6Njg5fQ==",
+                "approximateArrivalTimestamp": 1557877302.51
+            },
+            "eventSource": "aws:kinesis",
+            "eventVersion": "1.0",
+            "eventID": "shardId-000000000000:49595726434686551835933881938286007156865948423133593602",
+            "eventName": "aws:kinesis:record",
+            "invokeIdentityArn": "arn:aws:iam::374852340823:role/kinesis-self-adjusting-dev-ventilator-us-east-1-lambdaRole",
+            "awsRegion": "us-east-1",
+            "eventSourceARN": "arn:aws:kinesis:us-east-1:374852340823:stream/kinesis-self-adjusting-dev-Stream-141KNDEDI0VS0"
+        }
+    ]
+}

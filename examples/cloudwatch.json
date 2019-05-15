@@ -1,0 +1,13 @@
+{
+  "version": "0",
+  "id": "6bc856c8-6a21-3195-af1f-4fef7410e0d4",
+  "detail-type": "Scheduled Event",
+  "source": "aws.events",
+  "account": "374852340823",
+  "time": "2019-05-15T00:16:33Z",
+  "region": "us-east-1",
+  "resources": [
+      "arn:aws:events:us-east-1:374852340823:rule/kinesis-self-adjusting-de-VentilatorEventsRuleSche-1NJEV92KIUSF2"
+  ],
+  "detail": {}
+}

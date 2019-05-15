@@ -1,0 +1,24 @@
+{
+  "name": "kinesis-self-adjusting",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "aws-sdk": "^2.454.0",
+    "bluebird": "^3.5.4",
+    "debug": "^4.1.1",
+    "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "serverless": "^1.42.3",
+    "serverless-cloudside-plugin": "^1.0.3",
+    "serverless-iam-roles-per-function": "^2.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

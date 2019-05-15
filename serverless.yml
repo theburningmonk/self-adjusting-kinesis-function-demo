@@ -1,0 +1,75 @@
+service: kinesis-self-adjusting
+
+plugins:
+  - serverless-iam-roles-per-function
+  - serverless-cloudside-plugin
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+functions:
+  worker:
+    handler: functions/worker.handler
+    timeout: 6
+    environment:
+      SLOW_PERCENTAGE: 10
+      ERROR_PERCENTAGE: 10
+
+  ventilator:
+    handler: functions/ventilator.handler
+    events:
+      - stream:
+          type: kinesis
+          arn:
+            Fn::GetAtt: [Stream, Arn]
+      - schedule: rate(10 minutes)
+    timeout: 15
+    environment:
+      MAX_BATCH_SIZE: 10
+      LATENCY_THRESHOLD: 1000
+      TABLE_NAME: 
+        Ref: DynamoDB
+      WORKER_FUNCTION_NAME:
+        Ref: WorkerLambdaFunction
+      KINESIS_ARN: 
+        Fn::GetAtt: [Stream, Arn]
+    iamRoleStatements:
+      - Effect: Allow
+        Action: 
+          - lambda:ListEventSourceMappings
+          - lambda:UpdateEventSourceMapping
+        Resource: '*'
+      - Effect: Allow
+        Action: lambda:InvokeFunction
+        Resource:
+          Fn::GetAtt: [WorkerLambdaFunction, Arn]
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+          - dynamodb:BatchGetItem
+        Resource:
+          Fn::GetAtt: [DynamoDB, Arn]
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    Stream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        ShardCount: 1
+
+    DynamoDB:
+      Type: AWS::DynamoDB::Table
+      Properties: 
+        AttributeDefinitions:
+          - AttributeName: Id
+            AttributeType: S
+          - AttributeName: Date
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: Id
+            KeyType: HASH
+          - AttributeName: Date
+            KeyType: RANGE
