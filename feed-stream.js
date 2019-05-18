@@ -7,7 +7,7 @@ const uuid = require('uuid/v4')
 const sendIt = async (id) => {
   await Kinesis.putRecord({ 
     Data: JSON.stringify({ id: `${id}` }), 
-    StreamName: 'kinesis-self-adjusting-dev-Stream-141KNDEDI0VS0', 
+    StreamName: 'kinesis-self-adjusting-stream', 
     PartitionKey: 'test'}).promise()
 }
 

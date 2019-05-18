@@ -57,6 +57,7 @@ resources:
     Stream:
       Type: AWS::Kinesis::Stream
       Properties:
+        Name: kinesis-self-adjusting-stream
         ShardCount: 1
 
     DynamoDB:
