@@ -79,12 +79,17 @@ const enableStream = async () => {
 const doTask = async ({ id }) => {
   const start = Date.now()
   try {
-    await Lambda.invoke({
+    const resp = await Lambda.invoke({
       FunctionName: WorkerFunctionName,
       InvocationType: 'RequestResponse',
       Payload: JSON.stringify({ id })
     }).promise()
     const end = Date.now()
+    
+    if (resp.FunctionError) {
+      return { id, latency: end - start, isSuccess: false }
+    }
+
     return { id, isSuccess: true, latency: end - start }
   } catch (e) {
     console.log(`${id}: task failed.`, e)
@@ -131,7 +136,7 @@ const isPerfDeteriorating = (results) => {
   const slowCount = results.filter(({ latency }) => latency > LatencyThreshold).length
   const errorCount = results.filter(({ isSuccess }) => !isSuccess).length
 
-  debug(`slow tasks: ${slowCount} errors: ${errorCount} total: ${results.length}`)
+  console.log(`slow tasks: ${slowCount} errors: ${errorCount} total: ${results.length}`)
 
   return (slowCount + errorCount) / results.length > 0.5
 }
@@ -140,7 +145,7 @@ const isPerfGood = (results) => {
   const slowCount = results.filter(({ latency }) => latency > LatencyThreshold).length
   const errorCount = results.filter(({ isSuccess }) => !isSuccess).length
 
-  debug(`slow tasks: ${slowCount} errors: ${errorCount} total: ${results.length}`)
+  console.log(`slow tasks: ${slowCount} errors: ${errorCount} total: ${results.length}`)
   
   return slowCount === 0 && errorCount === 0
 }
@@ -159,11 +164,14 @@ module.exports.handler = async (event) => {
 
   // a kinesis event would include Records
   if (event.Records) {
+    console.log(`batch size: ${eventSourceMapping.BatchSize}`)
+
     const tasks = event.Records
       .map(record => {
         const json = Buffer.from(record.kinesis.data, 'base64').toString('utf8')
         return JSON.parse(json)
       })
+
     const dedupedTasks = await dedupe(tasks)    
 
     if (_.isEmpty(dedupedTasks)) {
